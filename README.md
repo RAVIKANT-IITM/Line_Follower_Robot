@@ -1,8 +1,8 @@
-# 🤖 Line Follower Robot
+# Line Follower Robot
 
 A PID-controlled line follower robot built using **Arduino Nano, TB6612FNG motor driver, N20 motors, and an 8-channel QTR sensor array**.
 
-## 🚀 Project Overview
+## Project Overview
 
 This robot is designed to follow a predefined line using real-time feedback from an 8-channel QTR sensor array. A **PID control algorithm** continuously calculates the position error and adjusts the speed of the left and right motors accordingly.
 
@@ -18,7 +18,7 @@ This results in smoother movement, better stability, and improved handling of tu
 * Battery
 * Connecting Wires
 
-## ⚙️ Working Principle
+## Working Principle
 
 1. The QTR sensor array detects the line.
 2. Sensor readings are processed to calculate the line position.
@@ -45,7 +45,7 @@ Kd = 0.5;
 
 These values can be tuned according to the track, motor speed, sensor setup, and robot weight.
 
-## 📊 Features
+## Features
 
 * Real-time sensor processing
 * PID-based control
@@ -55,13 +55,13 @@ These values can be tuned according to the track, motor speed, sensor setup, and
 * Smooth line tracking
 * Better stability during turns
 
-## 💻 Software
+## Software
 
 * Arduino IDE
 * Embedded C/C++
 * PID Control Algorithm
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 Through this project, I gained practical experience in:
 
@@ -75,7 +75,7 @@ Through this project, I gained practical experience in:
 
 I also had the opportunity to **present this project at IIT Madras Spark**, where I demonstrated the robot and discussed its design and working.
 
-## 🔮 Future Improvements
+## Future Improvements
 
 * Automatic PID tuning
 * Higher-speed optimization
