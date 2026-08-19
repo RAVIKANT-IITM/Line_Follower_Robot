@@ -1,0 +1,161 @@
+// PID Line Follower Robot
+// Arduino Nano + TB6612FNG + QTR Sensor
+// ============================================
+
+// ---------- TB6612FNG Motor Driver ----------
+
+// RIGHT MOTOR
+#define PWMA 5
+#define AIN1 8
+#define AIN2 9
+
+// LEFT MOTOR
+#define PWMB 6
+#define BIN1 10
+#define BIN2 11
+
+// Standby
+#define STBY 7
+
+// ---------- QTR Sensor Array ----------
+int qtrPins[8] = {A0, A1, A2, A3, A4, A5, A6, A7};
+
+// ---------- Motor Speed ----------
+int baseSpeed = 50;
+int maxSpeed = 100;
+
+// ---------- PID Parameters ----------
+float Kp = 0.13;
+float Ki = 0.0;
+float Kd = 0.5;
+
+int lastError = 0;
+int integral = 0;
+
+// ============================================
+// SETUP
+// ============================================
+
+void setup() {
+
+  Serial.begin(115200);
+
+  // Motor driver pins
+  pinMode(AIN1, OUTPUT);
+  pinMode(AIN2, OUTPUT);
+
+  pinMode(BIN1, OUTPUT);
+  pinMode(BIN2, OUTPUT);
+
+  pinMode(PWMA, OUTPUT);
+  pinMode(PWMB, OUTPUT);
+
+  pinMode(STBY, OUTPUT);
+
+  // Enable motor driver
+  digitalWrite(STBY, HIGH);
+
+  // Set both motors to forward direction
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+}
+
+// ============================================
+// MAIN LOOP
+// ============================================
+
+void loop() {
+
+  int raw[8];
+
+  // Read all 8 sensors
+  for (int i = 0; i < 8; i++) {
+
+    raw[i] = analogRead(qtrPins[i]);
+
+    Serial.print(raw[i]);
+    Serial.print("\t");
+  }
+
+  // Calculate line position
+  int position = readLine(raw);
+
+  // Center position = 3500
+  int error = position - 3500;
+
+  Serial.print("| POS=");
+  Serial.print(position);
+
+  Serial.print(" ERR=");
+  Serial.println(error);
+
+  // ---------- PID Calculation ----------
+
+  integral += error;
+
+  // Prevent integral wind-up
+  integral = constrain(integral, -4000, 4000);
+
+  int derivative = error - lastError;
+
+  lastError = error;
+
+  int correction =
+      (Kp * error) +
+      (Ki * integral) +
+      (Kd * derivative);
+
+  // ---------- Motor Speed ----------
+
+  int leftSpeed = baseSpeed - correction;
+  int rightSpeed = baseSpeed + correction;
+
+  leftSpeed = constrain(leftSpeed, 0, maxSpeed);
+  rightSpeed = constrain(rightSpeed, 0, maxSpeed);
+
+  moveMotors(leftSpeed, rightSpeed);
+}
+
+// ============================================
+// READ LINE POSITION
+// ============================================
+
+int readLine(int raw[]) {
+
+  long sum = 0;
+  long weightedSum = 0;
+
+  for (int i = 0; i < 8; i++) {
+
+    int value = raw[i];
+
+    value = constrain(value, 0, 1000);
+
+    // Convert BLACK → HIGH
+    value = 1000 - value;
+
+    weightedSum += (long)value * (i * 1000);
+
+    sum += value;
+  }
+
+  // If line is lost, return center position
+  if (sum == 0) {
+    return 3500;
+  }
+
+  return weightedSum / sum;
+}
+
+// ============================================
+// MOTOR CONTROL
+// ============================================
+
+void moveMotors(int leftSpeed, int rightSpeed) {
+
+  analogWrite(PWMB, leftSpeed);
+  analogWrite(PWMA, rightSpeed);
+}
