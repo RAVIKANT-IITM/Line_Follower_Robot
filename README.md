@@ -2,6 +2,10 @@
 
 A PID-controlled line follower robot built using **Arduino Nano, TB6612FNG motor driver, N20 motors, and an 8-channel QTR sensor array**.
 
+<img src="ckt_diagram.jpg"
+     alt="Crop Monitoring"
+     class="project-image">
+
 ## Project Overview
 
 This robot is designed to follow a predefined line using real-time feedback from an 8-channel QTR sensor array. A **PID control algorithm** continuously calculates the position error and adjusts the speed of the left and right motors accordingly.
@@ -26,6 +30,10 @@ This results in smoother movement, better stability, and improved handling of tu
 4. The PID controller calculates the required correction.
 5. Motor speeds are adjusted based on the correction.
 6. The robot continuously repeats this process in real time.
+   
+<img src="Project img.jpg"
+     alt="Crop Monitoring"
+     class="project-image">
 
 ### PID Control
 
